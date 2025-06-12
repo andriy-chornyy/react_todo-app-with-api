@@ -1,0 +1,90 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
+/* eslint-disable jsx-a11y/control-has-associated-label */
+
+import React, { useState } from 'react';
+import { Todo } from '../../types/Todo';
+import cn from 'classnames';
+
+type Props = {
+  todo: Todo;
+  handleDeleteTodo: (todoId: number) => void;
+  deletingTodoId: number | null;
+  onToggleCompleted: (id: number, title: string, completed: boolean) => void;
+
+};
+
+export const TodoItem: React.FC<Props> = ({
+  todo: { title, completed, id },
+  handleDeleteTodo,
+  deletingTodoId,
+  onToggleCompleted,
+}) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedTitle, setEditedTitle] = useState(title);
+
+
+
+  return (
+    <>
+      {/* This is a completed todo */}
+      <div data-cy="Todo" className={cn('todo', { completed })}>
+        <label className="todo__status-label">
+          <input
+            data-cy="TodoStatus"
+            type="checkbox"
+            className="todo__status loader"
+            checked={completed}
+            onChange={() => onToggleCompleted(id, title, completed)}
+          />
+        </label>
+
+        {isEditing ? (
+          <input
+            data-cy="TodoTitle"
+            type="text"
+            value={editedTitle}
+            placeholder={editedTitle.length === 0 ? 'Empty todo will be deleted' : editedTitle}
+            onChange={e => setEditedTitle(e.target.value)}
+            className="todoapp__new-todo"
+            // onBlur={handleSubmit} // Сохраняем изменения при потере фокуса
+            // onKeyDown={handleKeyDown} // Обработка Enter / Escape
+            autoFocus
+          />
+        ) : (
+          <span
+            data-cy="TodoTitle"
+            className="todo__title"
+            onDoubleClick={() => setIsEditing(true)}
+          >
+            {/* Completed Todo */}
+            {title}
+          </span>
+        )}
+
+        {/* Remove button appears only on hover */}
+        {!isEditing && (
+          <button
+            type="button"
+            className="todo__remove"
+            data-cy="TodoDelete"
+            onClick={() => handleDeleteTodo(id)}
+          >
+            ×
+          </button>
+        )}
+
+        {/* overlay will cover the todo while it is being deleted or updated */}
+
+        <div
+          data-cy="TodoLoader"
+          className={cn('modal overlay', {
+            'is-active': id === 0 || id === deletingTodoId,
+          })}
+        >
+          <div className="modal-background has-background-white-ter" />
+          <div className="loader" />
+        </div>
+      </div>
+    </>
+  );
+};
