@@ -27,7 +27,9 @@ export const App: React.FC = () => {
   const [title, setTitle] = useState('');
 
   const inputRef = useRef<HTMLInputElement | null>(null);
-  // const [updateTodo, setUpdateTodo] = useState<Todo | null>(null);
+
+  const [todosIds, setTodosIds] = useState<number[]>([]);
+
 
   useEffect(() => {
     if (inputRef) {
@@ -140,6 +142,8 @@ export const App: React.FC = () => {
       userId: USER_ID,
     };
 
+    setTodosIds(prev => [...prev, id]);
+
     updateTodo(updatedTodo)
       .then(() => {
         setAllTodos(prevTodos =>
@@ -150,9 +154,37 @@ export const App: React.FC = () => {
       })
       .catch(() => {
         setIsError('Unable to update a todo');
-      });
+      })
+      .finally(() => setTodosIds(prev => prev.filter(ids => ids != id)));
   };
 
+  const handleTitleChange = ( id: number,
+    changeTitle: string, completed: boolean
+  ) => {
+    const updatedTodo = {
+      id,
+      title: changeTitle,
+      completed,
+      userId: USER_ID,
+    };
+
+    setTodosIds(prev => [...prev, id]);
+
+    updateTodo(updatedTodo)
+      .then(() => {
+        setAllTodos(prevTodos =>
+          prevTodos.map(todo =>
+            todo.id === id ? { ...todo, title: changeTitle, } : todo
+          )
+        );
+      })
+      .catch(() => {
+        setIsError('Unable to update a todo');
+      })
+      .finally(() => {
+        setTodosIds(prev => prev.filter(ids => ids != id))
+      });
+  }
 
   return (
     <div className="todoapp">
@@ -175,6 +207,8 @@ export const App: React.FC = () => {
           handleDeleteTodo={handleDeleteTodo}
           deletingTodoId={deletingTodoId}
           onToggleCompleted={handleToggleCompleted}
+          todosIds={todosIds}
+          handleTitleChange={handleTitleChange}
         />
 
         {allTodos.length > 0 && (
@@ -191,3 +225,23 @@ export const App: React.FC = () => {
     </div>
   );
 };
+
+
+
+// const handleTitleChange = (  updatedTodo: Todo,
+//   key: string, newValue: boolean | string
+// ) => {
+//   setTodosIds(prev => [...prev, updatedTodo.id]);
+//   updateTodo({...updatedTodo, [key]: newValue })
+//     .then(() => {
+//       setAllTodos(prevTodos =>
+//         prevTodos.map(todo =>
+//           todo.id === id ? { ...todo, [key]: newValue } : todo
+//         )
+//       );
+//     })
+//     .catch(() => {
+//       setIsError('Unable to update a todo');
+//     })
+//     .finally(() => setTodosIds(prev => prev.filter(ids => ids != updatedTodo.id)));
+// }

@@ -10,7 +10,9 @@ type Props = {
   handleDeleteTodo: (todoId: number) => void;
   deletingTodoId: number | null;
   onToggleCompleted: (id: number, title: string, completed: boolean) => void;
+  todosIds: number[];
 
+  handleTitleChange: (id: number, title: string, completed: boolean) => void;
 };
 
 export const TodoItem: React.FC<Props> = ({
@@ -18,11 +20,24 @@ export const TodoItem: React.FC<Props> = ({
   handleDeleteTodo,
   deletingTodoId,
   onToggleCompleted,
+  todosIds,
+
+  handleTitleChange,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(title);
 
+  const handleSubmit = () => {
+    if (editedTitle === title) {
+      return
+    }
 
+    if (!editedTitle.trim().length) {
+      handleDeleteTodo(id);
+    }
+
+    handleTitleChange(id, title, completed)
+  }
 
   return (
     <>
@@ -46,7 +61,7 @@ export const TodoItem: React.FC<Props> = ({
             placeholder={editedTitle.length === 0 ? 'Empty todo will be deleted' : editedTitle}
             onChange={e => setEditedTitle(e.target.value)}
             className="todoapp__new-todo"
-            // onBlur={handleSubmit} // Сохраняем изменения при потере фокуса
+            onBlur={handleSubmit} // Сохраняем изменения при потере фокуса
             // onKeyDown={handleKeyDown} // Обработка Enter / Escape
             autoFocus
           />
@@ -78,7 +93,7 @@ export const TodoItem: React.FC<Props> = ({
         <div
           data-cy="TodoLoader"
           className={cn('modal overlay', {
-            'is-active': id === 0 || id === deletingTodoId,
+            'is-active': id === 0 || id === deletingTodoId || todosIds.includes(id),
           })}
         >
           <div className="modal-background has-background-white-ter" />
