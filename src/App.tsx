@@ -2,7 +2,13 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { useEffect, useState, useRef } from 'react';
 import { UserWarning } from './UserWarning';
-import { getTodos, addTodo, USER_ID, deleteTodo, updateTodo } from './api/todos';
+import {
+  getTodos,
+  addTodo,
+  USER_ID,
+  deleteTodo,
+  updateTodo,
+} from './api/todos';
 
 import { Header } from './components/Header/Header';
 import { TodoList } from './components/TodoList/TodoList';
@@ -29,7 +35,8 @@ export const App: React.FC = () => {
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const [todosIds, setTodosIds] = useState<number[]>([]);
-
+  const [isAllTodosNotComplited, setIsAllTodosNotComplited] = useState(false);
+  // const [notComplidedLength, setNotComplidedLength] = [];
 
   useEffect(() => {
     if (inputRef) {
@@ -101,7 +108,6 @@ export const App: React.FC = () => {
       });
   };
 
-
   const handleDeleteTodo = (todoId: number) => {
     setDeletingTodoId(todoId);
 
@@ -148,18 +154,68 @@ export const App: React.FC = () => {
       .then(() => {
         setAllTodos(prevTodos =>
           prevTodos.map(todo =>
-            todo.id === id ? { ...todo, completed: !completed } : todo
-          )
+            todo.id === id ? { ...todo, completed: !completed } : todo,
+          ),
         );
       })
       .catch(() => {
         setIsError('Unable to update a todo');
       })
-      .finally(() => setTodosIds(prev => prev.filter(ids => ids != id)));
+      .finally(() => {
+        setTodosIds(prev => prev.filter(ids => ids != id));
+      });
   };
 
-  const handleTitleChange = ( id: number,
-    changeTitle: string, completed: boolean
+  useEffect(() => {
+    if (todosToDisplay.length === todosToDisplay.filter(todo => todo.completed === false).length) {
+      setIsAllTodosNotComplited(true)
+    } else {
+      setIsAllTodosNotComplited(false);
+    }
+  }, [todosToDisplay])
+
+
+
+  const handleToggleAll = () => {
+    const notComplided = todosToDisplay.filter(
+      todo => todo.completed === false,
+    );
+    const complidedTodos = todosToDisplay.filter(
+      todo => todo.completed === true,
+    );
+
+
+
+    // console.log('notComplidednotComplidednotComplided-----', notComplided);
+
+    if (notComplided.length === todosToDisplay.length) {
+      notComplided.map(todo =>
+        handleToggleCompleted(todo.id, todo.title, todo.completed),
+      );
+    }
+
+    if (complidedTodos.length === todosToDisplay.length) {
+
+      complidedTodos.map(todo =>
+        handleToggleCompleted(todo.id, todo.title, todo.completed),
+        );
+    }
+
+    if (complidedTodos.length > 0) {
+      complidedTodos.filter(todo =>
+        handleToggleCompleted(todo.id, todo.title, todo.completed),
+        );
+      return;
+    }
+  };
+
+  console.log('noisAllTodosNotComplitedmplided-----', isAllTodosNotComplited);
+  // }, [todosToDisplay])
+
+  const handleTitleChange = (
+    id: number,
+    changeTitle: string,
+    completed: boolean,
   ) => {
     const updatedTodo = {
       id,
@@ -174,17 +230,17 @@ export const App: React.FC = () => {
       .then(() => {
         setAllTodos(prevTodos =>
           prevTodos.map(todo =>
-            todo.id === id ? { ...todo, title: changeTitle, } : todo
-          )
+            todo.id === id ? { ...todo, title: changeTitle } : todo,
+          ),
         );
       })
       .catch(() => {
         setIsError('Unable to update a todo');
       })
       .finally(() => {
-        setTodosIds(prev => prev.filter(ids => ids != id))
+        setTodosIds(prev => prev.filter(ids => ids != id));
       });
-  }
+  };
 
   return (
     <div className="todoapp">
@@ -199,6 +255,8 @@ export const App: React.FC = () => {
           title={title}
           onTitleChange={setTitle}
           inputRef={inputRef}
+          handleToggleAll={handleToggleAll}
+          isAllTodosNotComplited={isAllTodosNotComplited}
         />
 
         <TodoList
@@ -225,8 +283,6 @@ export const App: React.FC = () => {
     </div>
   );
 };
-
-
 
 // const handleTitleChange = (  updatedTodo: Todo,
 //   key: string, newValue: boolean | string

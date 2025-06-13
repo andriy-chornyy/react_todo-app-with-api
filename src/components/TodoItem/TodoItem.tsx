@@ -28,16 +28,28 @@ export const TodoItem: React.FC<Props> = ({
   const [editedTitle, setEditedTitle] = useState(title);
 
   const handleSubmit = () => {
+    setIsEditing(false);
     if (editedTitle === title) {
-      return
+      return;
     }
 
     if (!editedTitle.trim().length) {
       handleDeleteTodo(id);
     }
 
-    handleTitleChange(id, title, completed)
-  }
+    handleTitleChange(id, editedTitle, completed);
+  };
+
+  const handleReset = () => {
+    setEditedTitle(title);
+    setIsEditing(false);
+  };
+
+  const handleKeyUp = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      handleReset();
+    }
+  };
 
   return (
     <>
@@ -54,17 +66,23 @@ export const TodoItem: React.FC<Props> = ({
         </label>
 
         {isEditing ? (
-          <input
-            data-cy="TodoTitle"
-            type="text"
-            value={editedTitle}
-            placeholder={editedTitle.length === 0 ? 'Empty todo will be deleted' : editedTitle}
-            onChange={e => setEditedTitle(e.target.value)}
-            className="todoapp__new-todo"
-            onBlur={handleSubmit} // Сохраняем изменения при потере фокуса
-            // onKeyDown={handleKeyDown} // Обработка Enter / Escape
-            autoFocus
-          />
+          <form onSubmit={handleSubmit}>
+            <input
+              data-cy="TodoTitle"
+              type="text"
+              value={editedTitle}
+              placeholder={
+                editedTitle.length === 0
+                  ? 'Empty todo will be deleted'
+                  : editedTitle
+              }
+              onChange={e => setEditedTitle(e.target.value)}
+              className="todoapp__new-todo"
+              onBlur={handleSubmit}
+              onKeyUp={handleKeyUp}
+              autoFocus
+            />
+          </form>
         ) : (
           <span
             data-cy="TodoTitle"
@@ -93,7 +111,8 @@ export const TodoItem: React.FC<Props> = ({
         <div
           data-cy="TodoLoader"
           className={cn('modal overlay', {
-            'is-active': id === 0 || id === deletingTodoId || todosIds.includes(id),
+            'is-active':
+              id === 0 || id === deletingTodoId || todosIds.includes(id),
           })}
         >
           <div className="modal-background has-background-white-ter" />

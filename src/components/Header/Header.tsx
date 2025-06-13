@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { ErrorType } from '../../types/ErrorType';
 import { Todo } from '../../types/Todo';
+import cn from 'classnames';
 
 type Props = {
   handleAddTodo: (title: string) => void;
@@ -11,6 +12,9 @@ type Props = {
   onTitleChange: (value: string) => void;
 
   inputRef: React.RefObject<HTMLInputElement> | null;
+
+  handleToggleAll: () => void;
+  isAllTodosNotComplited: boolean
 };
 
 export const Header: React.FC<Props> = ({
@@ -21,6 +25,9 @@ export const Header: React.FC<Props> = ({
   title,
   onTitleChange,
   inputRef,
+
+  handleToggleAll,
+  isAllTodosNotComplited,
 }) => {
 
   useEffect(() => {
@@ -45,8 +52,9 @@ export const Header: React.FC<Props> = ({
     <header className="todoapp__header">
       <button
         type="button"
-        className="todoapp__toggle-all active"
+        className={cn("todoapp__toggle-all", {active: isAllTodosNotComplited})}
         data-cy="ToggleAllButton"
+        onClick={handleToggleAll}
       />
 
       <form onSubmit={handleSubmit}>
