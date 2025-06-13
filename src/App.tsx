@@ -247,7 +247,6 @@ export const App: React.FC = () => {
           handleToggleAll={handleToggleAll}
           isAllTodosNotComplited={isAllTodosNotComplited}
           allTodos={allTodos}
-          todosToDisplay={todosToDisplay}
         />
 
         <TodoList

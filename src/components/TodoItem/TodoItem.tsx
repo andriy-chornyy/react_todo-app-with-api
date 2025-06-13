@@ -29,7 +29,7 @@ export const TodoItem: React.FC<Props> = ({
 
   const handleSubmit = () => {
     setIsEditing(false);
-    if (editedTitle === title) {
+    if (editedTitle.trim() === title) {
       return;
     }
 
@@ -90,7 +90,7 @@ export const TodoItem: React.FC<Props> = ({
             onDoubleClick={() => setIsEditing(true)}
           >
             {/* Completed Todo */}
-            {title}
+            {editedTitle}
           </span>
         )}
 
