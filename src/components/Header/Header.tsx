@@ -14,7 +14,8 @@ type Props = {
   inputRef: React.RefObject<HTMLInputElement> | null;
 
   handleToggleAll: () => void;
-  isAllTodosNotComplited: boolean
+  isAllTodosNotComplited: boolean;
+  allTodos: Todo[];
 };
 
 export const Header: React.FC<Props> = ({
@@ -28,8 +29,9 @@ export const Header: React.FC<Props> = ({
 
   handleToggleAll,
   isAllTodosNotComplited,
-}) => {
 
+  allTodos,
+}) => {
   useEffect(() => {
     if (!tempTodo && inputRef && inputRef.current) {
       inputRef.current.focus();
@@ -50,12 +52,16 @@ export const Header: React.FC<Props> = ({
 
   return (
     <header className="todoapp__header">
-      <button
-        type="button"
-        className={cn("todoapp__toggle-all", {active: isAllTodosNotComplited})}
-        data-cy="ToggleAllButton"
-        onClick={handleToggleAll}
-      />
+      {allTodos.length > 0 && (
+        <button
+          type="button"
+          className={cn('todoapp__toggle-all', {
+            active: isAllTodosNotComplited,
+          })}
+          data-cy="ToggleAllButton"
+          onClick={handleToggleAll}
+        />
+      )}
 
       <form onSubmit={handleSubmit}>
         <input

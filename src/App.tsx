@@ -201,8 +201,8 @@ export const App: React.FC = () => {
         );
     }
 
-    if (complidedTodos.length > 0) {
-      complidedTodos.filter(todo =>
+    if (complidedTodos.length > 0 && complidedTodos.length < todosToDisplay.length) {
+      notComplided.filter(todo =>
         handleToggleCompleted(todo.id, todo.title, todo.completed),
         );
       return;
@@ -257,6 +257,7 @@ export const App: React.FC = () => {
           inputRef={inputRef}
           handleToggleAll={handleToggleAll}
           isAllTodosNotComplited={isAllTodosNotComplited}
+          allTodos={allTodos}
         />
 
         <TodoList

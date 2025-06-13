@@ -29,9 +29,9 @@ export const TodoItem: React.FC<Props> = ({
 
   const handleSubmit = () => {
     setIsEditing(false);
-    if (editedTitle === title) {
-      return;
-    }
+    // if (editedTitle === title) {
+    //   return;
+    // }
 
     if (!editedTitle.trim().length) {
       handleDeleteTodo(id);
@@ -68,7 +68,7 @@ export const TodoItem: React.FC<Props> = ({
         {isEditing ? (
           <form onSubmit={handleSubmit}>
             <input
-              data-cy="TodoTitle"
+              data-cy="TodoTitleField"
               type="text"
               value={editedTitle}
               placeholder={
