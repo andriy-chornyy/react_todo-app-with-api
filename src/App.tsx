@@ -134,8 +134,6 @@ export const App: React.FC = () => {
     completedTodos.map(todo => handleDeleteTodo(todo.id));
   };
 
-  /////////////////////////////////////////////////
-
   const handleToggleCompleted = (
     id: number,
     title: string,
@@ -167,50 +165,41 @@ export const App: React.FC = () => {
   };
 
   useEffect(() => {
-    if (todosToDisplay.length === todosToDisplay.filter(todo => todo.completed === true).length) {
+    if (allTodos.length === allTodos.filter(todo => todo.completed === true).length) {
       setIsAllTodosNotComplited(true)
     } else {
       setIsAllTodosNotComplited(false);
     }
-  }, [todosToDisplay])
+  }, [allTodos])
 
 
 
   const handleToggleAll = () => {
-    const notComplided = todosToDisplay.filter(
+    const notComplided = allTodos.filter(
       todo => todo.completed === false,
     );
-    const complidedTodos = todosToDisplay.filter(
+    const complidedTodos = allTodos.filter(
       todo => todo.completed === true,
     );
 
-
-
-    // console.log('notComplidednotComplidednotComplided-----', notComplided);
-
-    if (notComplided.length === todosToDisplay.length) {
+    if (notComplided.length === allTodos.length) {
       notComplided.map(todo =>
         handleToggleCompleted(todo.id, todo.title, todo.completed),
       );
     }
 
-    if (complidedTodos.length === todosToDisplay.length) {
-
+    if (complidedTodos.length === allTodos.length) {
       complidedTodos.map(todo =>
         handleToggleCompleted(todo.id, todo.title, todo.completed),
         );
     }
 
-    if (complidedTodos.length > 0 && complidedTodos.length < todosToDisplay.length) {
-      notComplided.filter(todo =>
+    if (notComplided.length > 0) {
+      notComplided.map(todo =>
         handleToggleCompleted(todo.id, todo.title, todo.completed),
         );
-      return;
     }
   };
-
-  console.log('noisAllTodosNotComplitedmplided-----', isAllTodosNotComplited);
-  // }, [todosToDisplay])
 
   const handleTitleChange = (
     id: number,
@@ -258,6 +247,7 @@ export const App: React.FC = () => {
           handleToggleAll={handleToggleAll}
           isAllTodosNotComplited={isAllTodosNotComplited}
           allTodos={allTodos}
+          todosToDisplay={todosToDisplay}
         />
 
         <TodoList

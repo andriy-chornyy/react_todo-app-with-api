@@ -29,9 +29,9 @@ export const TodoItem: React.FC<Props> = ({
 
   const handleSubmit = () => {
     setIsEditing(false);
-    // if (editedTitle === title) {
-    //   return;
-    // }
+    if (editedTitle === title) {
+      return;
+    }
 
     if (!editedTitle.trim().length) {
       handleDeleteTodo(id);
