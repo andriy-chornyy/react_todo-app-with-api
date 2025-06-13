@@ -167,7 +167,7 @@ export const App: React.FC = () => {
   };
 
   useEffect(() => {
-    if (todosToDisplay.length === todosToDisplay.filter(todo => todo.completed === false).length) {
+    if (todosToDisplay.length === todosToDisplay.filter(todo => todo.completed === true).length) {
       setIsAllTodosNotComplited(true)
     } else {
       setIsAllTodosNotComplited(false);
