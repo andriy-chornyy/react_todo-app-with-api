@@ -33,10 +33,11 @@ export const App: React.FC = () => {
   const [title, setTitle] = useState('');
 
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const inputRef2 = useRef<HTMLInputElement | null>(null);
 
   const [todosIds, setTodosIds] = useState<number[]>([]);
   const [isAllTodosNotComplited, setIsAllTodosNotComplited] = useState(false);
-  // const [notComplidedLength, setNotComplidedLength] = [];
+  const [hesError, setHasError] = useState(false);
 
   useEffect(() => {
     if (inputRef) {
@@ -158,6 +159,7 @@ export const App: React.FC = () => {
       })
       .catch(() => {
         setIsError('Unable to update a todo');
+        setHasError(true)
       })
       .finally(() => {
         setTodosIds(prev => prev.filter(ids => ids != id));
@@ -257,6 +259,10 @@ export const App: React.FC = () => {
           onToggleCompleted={handleToggleCompleted}
           todosIds={todosIds}
           handleTitleChange={handleTitleChange}
+
+
+          inputRef2={inputRef2}
+          hesError={hesError}
         />
 
         {allTodos.length > 0 && (

@@ -13,6 +13,9 @@ type Props = {
   todosIds: number[];
 
   handleTitleChange: (id: number, title: string, completed: boolean) => void;
+  hesError: boolean;
+
+  inputRef2: React.RefObject<HTMLInputElement> | null;
 };
 
 export const TodoItem: React.FC<Props> = ({
@@ -23,21 +26,27 @@ export const TodoItem: React.FC<Props> = ({
   todosIds,
 
   handleTitleChange,
+  hesError,
+
+  inputRef2,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(title);
 
   const handleSubmit = () => {
-    setIsEditing(false);
-    if (editedTitle.trim() === title) {
-      return;
+    setEditedTitle(prev => prev.trim())
+
+    if (editedTitle === title) {
+      return
     }
 
-    if (!editedTitle.trim().length) {
+    if (!editedTitle.length) {
       handleDeleteTodo(id);
     }
 
     handleTitleChange(id, editedTitle, completed);
+
+    setIsEditing(false);
   };
 
   const handleReset = () => {
@@ -48,6 +57,9 @@ export const TodoItem: React.FC<Props> = ({
   const handleKeyUp = (e: React.KeyboardEvent) => {
     if (e.key === 'Escape') {
       handleReset();
+    }
+    if (e.key === 'Enter') {
+      handleSubmit();
     }
   };
 
@@ -66,23 +78,23 @@ export const TodoItem: React.FC<Props> = ({
         </label>
 
         {isEditing ? (
-          <form onSubmit={handleSubmit}>
-            <input
-              data-cy="TodoTitleField"
-              type="text"
-              value={editedTitle}
-              placeholder={
-                editedTitle.length === 0
-                  ? 'Empty todo will be deleted'
-                  : editedTitle
-              }
-              onChange={e => setEditedTitle(e.target.value)}
-              className="todoapp__new-todo"
-              onBlur={handleSubmit}
-              onKeyUp={handleKeyUp}
-              autoFocus
-            />
-          </form>
+          <input
+            data-cy="TodoTitleField"
+            type="text"
+            value={editedTitle}
+            placeholder={
+              editedTitle.length === 0
+                ? 'Empty todo will be deleted'
+                : editedTitle
+            }
+            onChange={e => setEditedTitle(e.target.value)}
+            className="todoapp__new-todo"
+            onBlur={handleSubmit}
+            onKeyUp={handleKeyUp}
+            autoFocus
+
+            ref={inputRef2}
+          />
         ) : (
           <span
             data-cy="TodoTitle"

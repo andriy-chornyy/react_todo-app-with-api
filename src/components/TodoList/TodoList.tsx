@@ -11,6 +11,8 @@ type Props = {
   todosIds: number[];
 
   handleTitleChange: (id: number, title: string, completed: boolean) => void;
+  hesError: boolean;
+  inputRef2: React.RefObject<HTMLInputElement> | null;
 };
 
 export const TodoList: React.FC<Props> = ({
@@ -22,6 +24,8 @@ export const TodoList: React.FC<Props> = ({
   todosIds,
 
   handleTitleChange,
+  hesError,
+  inputRef2,
 }) => {
   return (
     <section className="todoapp__main" data-cy="TodoList">
@@ -35,6 +39,9 @@ export const TodoList: React.FC<Props> = ({
           todosIds={todosIds}
 
           handleTitleChange={handleTitleChange}
+
+          hesError={hesError}
+          inputRef2={inputRef2}
         />
       ))}
       {tempTodo && (
@@ -47,6 +54,9 @@ export const TodoList: React.FC<Props> = ({
           todosIds={todosIds}
 
           handleTitleChange={handleTitleChange}
+          hesError={hesError}
+
+          inputRef2={inputRef2}
         />
       )}
     </section>
