@@ -79,6 +79,8 @@ export const App: React.FC = () => {
       allTodos.filter(todo => todo.completed === true).length
     ) {
       setIsAllTodosNotComplited(true);
+    } else {
+      setIsAllTodosNotComplited(false);
     }
   }, [allTodos]);
 
@@ -97,9 +99,9 @@ export const App: React.FC = () => {
     setTempTodo(newTempTodo);
 
     addTodo(newTitle)
-    .then(todoFromServer => {
-      setAllTodos(prevTodos => [...prevTodos, todoFromServer]);
-      setTempTodo(null);
+      .then(todoFromServer => {
+        setAllTodos(prevTodos => [...prevTodos, todoFromServer]);
+        setTempTodo(null);
         setIsError(null);
         setTitle('');
       })
