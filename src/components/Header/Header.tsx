@@ -21,7 +21,6 @@ type Props = {
 export const Header: React.FC<Props> = ({
   handleAddTodo,
   handleError,
-  // error,
   tempTodo,
   title,
   onTitleChange,

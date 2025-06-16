@@ -22,22 +22,16 @@ import { ErrorType } from './types/ErrorType';
 export const App: React.FC = () => {
   const [allTodos, setAllTodos] = useState<Todo[]>([]);
   const [todosToDisplay, setTodosToDisplay] = useState<Todo[]>([]);
-
   const [selectedValue, setSelectedValue] = useState<FilterStatus>(
     FilterStatus.All,
   );
-
   const [tempTodo, setTempTodo] = useState<Todo | null>(null);
   const [isError, setIsError] = useState<ErrorType | null>(null);
   const [deletingTodoId, setDeletingTodoId] = useState<number | null>(null);
   const [title, setTitle] = useState('');
-
   const inputRef = useRef<HTMLInputElement | null>(null);
-  // const inputRef2 = useRef<HTMLInputElement | null>(null);
-
   const [todosIds, setTodosIds] = useState<number[]>([]);
   const [isAllTodosNotComplited, setIsAllTodosNotComplited] = useState(false);
-  // const [hesError, setHasError] = useState(false);
 
   useEffect(() => {
     if (inputRef) {
@@ -79,6 +73,15 @@ export const App: React.FC = () => {
     setTodosToDisplay(viewList);
   }, [selectedValue, allTodos]);
 
+  useEffect(() => {
+    if (
+      allTodos.length ===
+      allTodos.filter(todo => todo.completed === true).length
+    ) {
+      setIsAllTodosNotComplited(true);
+    }
+  }, [allTodos]);
+
   if (!USER_ID) {
     return <UserWarning />;
   }
@@ -94,9 +97,9 @@ export const App: React.FC = () => {
     setTempTodo(newTempTodo);
 
     addTodo(newTitle)
-      .then(todoFromServer => {
-        setAllTodos(prevTodos => [...prevTodos, todoFromServer]);
-        setTempTodo(null);
+    .then(todoFromServer => {
+      setAllTodos(prevTodos => [...prevTodos, todoFromServer]);
+      setTempTodo(null);
         setIsError(null);
         setTitle('');
       })
@@ -137,12 +140,12 @@ export const App: React.FC = () => {
 
   const handleToggleCompleted = (
     id: number,
-    title: string,
+    todoTitle: string,
     completed: boolean,
   ) => {
     const updatedTodo = {
       id,
-      title,
+      title: todoTitle,
       completed: !completed,
       userId: USER_ID,
     };
@@ -159,30 +162,15 @@ export const App: React.FC = () => {
       })
       .catch(() => {
         setIsError('Unable to update a todo');
-        // setHasError(true)
       })
       .finally(() => {
         setTodosIds(prev => prev.filter(ids => ids != id));
       });
   };
 
-  useEffect(() => {
-    if (allTodos.length === allTodos.filter(todo => todo.completed === true).length) {
-      setIsAllTodosNotComplited(true)
-    } else {
-      setIsAllTodosNotComplited(false);
-    }
-  }, [allTodos])
-
-
-
   const handleToggleAll = () => {
-    const notComplided = allTodos.filter(
-      todo => todo.completed === false,
-    );
-    const complidedTodos = allTodos.filter(
-      todo => todo.completed === true,
-    );
+    const notComplided = allTodos.filter(todo => todo.completed === false);
+    const complidedTodos = allTodos.filter(todo => todo.completed === true);
 
     if (notComplided.length === allTodos.length) {
       notComplided.map(todo =>
@@ -193,13 +181,13 @@ export const App: React.FC = () => {
     if (complidedTodos.length === allTodos.length) {
       complidedTodos.map(todo =>
         handleToggleCompleted(todo.id, todo.title, todo.completed),
-        );
+      );
     }
 
     if (notComplided.length > 0) {
       notComplided.map(todo =>
         handleToggleCompleted(todo.id, todo.title, todo.completed),
-        );
+      );
     }
   };
 
@@ -263,10 +251,6 @@ export const App: React.FC = () => {
           onToggleCompleted={handleToggleCompleted}
           todosIds={todosIds}
           handleTitleChange={handleTitleChange}
-
-
-          // inputRef2={inputRef2}
-          // hesError={hesError}
         />
 
         {allTodos.length > 0 && (
@@ -283,21 +267,3 @@ export const App: React.FC = () => {
     </div>
   );
 };
-
-// const handleTitleChange = (  updatedTodo: Todo,
-//   key: string, newValue: boolean | string
-// ) => {
-//   setTodosIds(prev => [...prev, updatedTodo.id]);
-//   updateTodo({...updatedTodo, [key]: newValue })
-//     .then(() => {
-//       setAllTodos(prevTodos =>
-//         prevTodos.map(todo =>
-//           todo.id === id ? { ...todo, [key]: newValue } : todo
-//         )
-//       );
-//     })
-//     .catch(() => {
-//       setIsError('Unable to update a todo');
-//     })
-//     .finally(() => setTodosIds(prev => prev.filter(ids => ids != updatedTodo.id)));
-// }

@@ -5,27 +5,26 @@ import { TodoItem } from '../TodoItem/TodoItem';
 type Props = {
   allTodos: Todo[];
   tempTodo: Todo | null;
-  handleDeleteTodo: (todoId: number) => void;
   deletingTodoId: number | null;
-  onToggleCompleted: (id: number, title: string, completed: boolean) => void;
   todosIds: number[];
 
-  handleTitleChange: (id: number, title: string, completed: boolean) => Promise<boolean>;
-  // hesError: boolean;
-  // inputRef2: React.RefObject<HTMLInputElement> | null;
+  handleDeleteTodo: (todoId: number) => void;
+  onToggleCompleted: (id: number, title: string, completed: boolean) => void;
+  handleTitleChange: (
+    id: number,
+    title: string,
+    completed: boolean,
+  ) => Promise<boolean>;
 };
 
 export const TodoList: React.FC<Props> = ({
   allTodos,
   tempTodo,
-  handleDeleteTodo,
   deletingTodoId,
-  onToggleCompleted,
   todosIds,
-
+  handleDeleteTodo,
+  onToggleCompleted,
   handleTitleChange,
-  // hesError,
-  // inputRef2,
 }) => {
   return (
     <section className="todoapp__main" data-cy="TodoList">
@@ -37,11 +36,7 @@ export const TodoList: React.FC<Props> = ({
           deletingTodoId={deletingTodoId}
           onToggleCompleted={onToggleCompleted}
           todosIds={todosIds}
-
           handleTitleChange={handleTitleChange}
-
-          // hesError={hesError}
-          // inputRef2={inputRef2}
         />
       ))}
       {tempTodo && (
@@ -52,11 +47,7 @@ export const TodoList: React.FC<Props> = ({
           deletingTodoId={deletingTodoId}
           onToggleCompleted={onToggleCompleted}
           todosIds={todosIds}
-
           handleTitleChange={handleTitleChange}
-          // hesError={hesError}
-
-          // inputRef2={inputRef2}
         />
       )}
     </section>

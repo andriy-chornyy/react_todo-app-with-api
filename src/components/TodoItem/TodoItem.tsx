@@ -7,15 +7,16 @@ import cn from 'classnames';
 
 type Props = {
   todo: Todo;
-  handleDeleteTodo: (todoId: number) => void;
   deletingTodoId: number | null;
-  onToggleCompleted: (id: number, title: string, completed: boolean) => void;
   todosIds: number[];
 
-  handleTitleChange: (id: number, title: string, completed: boolean) => Promise<boolean>;
-  // hesError: boolean;
-
-  // inputRef2: React.RefObject<HTMLInputElement> | null;
+  handleDeleteTodo: (todoId: number) => void;
+  onToggleCompleted: (id: number, title: string, completed: boolean) => void;
+  handleTitleChange: (
+    id: number,
+    title: string,
+    completed: boolean,
+  ) => Promise<boolean>;
 };
 
 export const TodoItem: React.FC<Props> = ({
@@ -26,29 +27,28 @@ export const TodoItem: React.FC<Props> = ({
   todosIds,
 
   handleTitleChange,
-  // hesError,
-
-  // inputRef2,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(title);
 
   const handleSubmit = () => {
-    setEditedTitle(prev => prev.trim())
+    setEditedTitle(prev => prev.trim());
 
     if (editedTitle === title) {
-      setIsEditing(false)
-      return
+      setIsEditing(false);
+
+      return;
     }
 
     if (!editedTitle.length) {
       handleDeleteTodo(id);
+
       return;
     }
 
-    handleTitleChange(id, editedTitle, completed).then(res => setIsEditing(res));
-
-    setIsEditing(false);
+    handleTitleChange(id, editedTitle, completed).then(res =>
+      setIsEditing(res),
+    );
   };
 
   const handleReset = () => {
@@ -60,6 +60,7 @@ export const TodoItem: React.FC<Props> = ({
     if (e.key === 'Escape') {
       handleReset();
     }
+
     if (e.key === 'Enter') {
       handleSubmit();
     }
@@ -94,8 +95,6 @@ export const TodoItem: React.FC<Props> = ({
             onBlur={handleSubmit}
             onKeyUp={handleKeyUp}
             autoFocus
-
-            // ref={inputRef2}
           />
         ) : (
           <span
