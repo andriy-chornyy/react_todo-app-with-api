@@ -33,11 +33,11 @@ export const App: React.FC = () => {
   const [title, setTitle] = useState('');
 
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const inputRef2 = useRef<HTMLInputElement | null>(null);
+  // const inputRef2 = useRef<HTMLInputElement | null>(null);
 
   const [todosIds, setTodosIds] = useState<number[]>([]);
   const [isAllTodosNotComplited, setIsAllTodosNotComplited] = useState(false);
-  const [hesError, setHasError] = useState(false);
+  // const [hesError, setHasError] = useState(false);
 
   useEffect(() => {
     if (inputRef) {
@@ -143,7 +143,7 @@ export const App: React.FC = () => {
     const updatedTodo = {
       id,
       title,
-      completed: !completed, // инвертируем статус
+      completed: !completed,
       userId: USER_ID,
     };
 
@@ -159,7 +159,7 @@ export const App: React.FC = () => {
       })
       .catch(() => {
         setIsError('Unable to update a todo');
-        setHasError(true)
+        // setHasError(true)
       })
       .finally(() => {
         setTodosIds(prev => prev.filter(ids => ids != id));
@@ -207,7 +207,7 @@ export const App: React.FC = () => {
     id: number,
     changeTitle: string,
     completed: boolean,
-  ) => {
+  ): Promise<boolean> => {
     const updatedTodo = {
       id,
       title: changeTitle,
@@ -217,16 +217,20 @@ export const App: React.FC = () => {
 
     setTodosIds(prev => [...prev, id]);
 
-    updateTodo(updatedTodo)
+    return updateTodo(updatedTodo)
       .then(() => {
         setAllTodos(prevTodos =>
           prevTodos.map(todo =>
             todo.id === id ? { ...todo, title: changeTitle } : todo,
           ),
         );
+
+        return false;
       })
       .catch(() => {
         setIsError('Unable to update a todo');
+
+        return true;
       })
       .finally(() => {
         setTodosIds(prev => prev.filter(ids => ids != id));
@@ -261,8 +265,8 @@ export const App: React.FC = () => {
           handleTitleChange={handleTitleChange}
 
 
-          inputRef2={inputRef2}
-          hesError={hesError}
+          // inputRef2={inputRef2}
+          // hesError={hesError}
         />
 
         {allTodos.length > 0 && (

@@ -12,10 +12,10 @@ type Props = {
   onToggleCompleted: (id: number, title: string, completed: boolean) => void;
   todosIds: number[];
 
-  handleTitleChange: (id: number, title: string, completed: boolean) => void;
-  hesError: boolean;
+  handleTitleChange: (id: number, title: string, completed: boolean) => Promise<boolean>;
+  // hesError: boolean;
 
-  inputRef2: React.RefObject<HTMLInputElement> | null;
+  // inputRef2: React.RefObject<HTMLInputElement> | null;
 };
 
 export const TodoItem: React.FC<Props> = ({
@@ -26,9 +26,9 @@ export const TodoItem: React.FC<Props> = ({
   todosIds,
 
   handleTitleChange,
-  hesError,
+  // hesError,
 
-  inputRef2,
+  // inputRef2,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(title);
@@ -37,14 +37,16 @@ export const TodoItem: React.FC<Props> = ({
     setEditedTitle(prev => prev.trim())
 
     if (editedTitle === title) {
+      setIsEditing(false)
       return
     }
 
     if (!editedTitle.length) {
       handleDeleteTodo(id);
+      return;
     }
 
-    handleTitleChange(id, editedTitle, completed);
+    handleTitleChange(id, editedTitle, completed).then(res => setIsEditing(res));
 
     setIsEditing(false);
   };
@@ -93,7 +95,7 @@ export const TodoItem: React.FC<Props> = ({
             onKeyUp={handleKeyUp}
             autoFocus
 
-            ref={inputRef2}
+            // ref={inputRef2}
           />
         ) : (
           <span
