@@ -40,8 +40,8 @@ export const Footer: React.FC<Props> = ({
     },
   ];
 
-  function notCompletedTodo() {
-    return allTodos.filter(todo => todo.completed === false).length;
+  const notCompletedTodo = () => {
+    return allTodos.filter(todo => !todo.completed).length;
   }
 
   return (

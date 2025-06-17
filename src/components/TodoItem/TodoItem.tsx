@@ -91,7 +91,7 @@ export const TodoItem: React.FC<Props> = ({
                 : editedTitle
             }
             onChange={e => setEditedTitle(e.target.value)}
-            className="todoapp__new-todo"
+            className="todo__title-field"
             onBlur={handleSubmit}
             onKeyUp={handleKeyUp}
             autoFocus
